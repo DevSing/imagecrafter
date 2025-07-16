@@ -26,3 +26,5 @@ class SiteStat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     visitors = db.Column(db.Integer, default=0)          # Total site visitors
     files_converted = db.Column(db.Integer, default=0)   # Total converted/downloaded files
+from models import db
+db.create_all()
