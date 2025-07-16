@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: imagecrafter
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        value: 5e8b2f7e8fdc2bf043e3041be695a879

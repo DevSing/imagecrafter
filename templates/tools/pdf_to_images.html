@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}PDF to Images{% endblock %}
+
+{% block content %}
+<div class="tool-container">
+  <div class="text-center mb-4">
+    <h2><i class="bi bi-book fs-1 text-primary"></i> <strong>PDF to Images</strong></h2>
+    <p class="lead">
+      Upload multiple PDFs to extract all pages as images. You’ll receive a single ZIP file with all converted pages.
+    </p>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" class="tool-form">
+    <div class="mb-3">
+      <label for="pdf_files" class="form-label fw-bold">Select PDF files:</label>
+      <input type="file" class="form-control" name="pdf_files" id="pdf_files" accept="application/pdf" multiple required>
+    </div>
+
+    <div class="form-text mb-3">
+      You can upload up to <strong>{{ max_files }}</strong> PDF files.
+    </div>
+
+    <button type="submit" class="btn btn-primary">Convert & Download</button>
+  </form>
+
+  {% if zip_filename %}
+    <div class="mt-4 text-center">
+      <a href="{{ url_for('tools.download_zip', filename=zip_filename) }}" class="btn btn-success">
+        Download ZIP
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

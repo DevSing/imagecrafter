@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Image to PDF{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center mt-5">
+  <div class="bg-white rounded-4 shadow-sm p-5" style="max-width: 600px; width: 100%;">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-dark">
+        <i class="bi bi-file-earmark-pdf fs-1 text-danger"></i> Image to PDF
+      </h2>
+      <p class="text-muted">
+        Upload up to <strong>{{ max_files }}</strong> images. Each image will be converted into a separate PDF. All PDFs will be zipped into a single download.
+      </p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="pdfForm">
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select image files:</label>
+        <input class="form-control" type="file" name="images" id="images" accept="image/*" multiple hidden>
+        <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('images').click();">Choose Images</button>
+        <div class="form-text">Allowed: max <strong>{{ max_files }}</strong> files.</div>
+      </div>
+
+      <div id="filePreview" class="mb-3" style="display: none;">
+        <label class="form-label">📂 Selected Files:</label>
+        <ul class="list-group" id="fileList"></ul>
+      </div>
+
+      <div class="d-none" id="submitSection">
+        <button class="btn btn-primary w-100" type="submit">Convert & Download</button>
+      </div>
+    </form>
+
+    {% if zip_filename %}
+    <div class="text-center mt-4">
+      <h5 class="text-success">✅ Conversion Complete!</h5>
+      <a href="{{ url_for('tools.download_zip', filename=zip_filename) }}" class="btn btn-success mt-2">
+        Download Now
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  const imagesInput = document.getElementById('images');
+  const filePreview = document.getElementById('filePreview');
+  const fileList = document.getElementById('fileList');
+  const submitSection = document.getElementById('submitSection');
+  const maxFiles = {{ max_files }};
+
+  imagesInput.addEventListener('change', function () {
+    fileList.innerHTML = "";
+    const files = this.files;
+
+    if (files.length === 0) {
+      filePreview.style.display = 'none';
+      submitSection.classList.add('d-none');
+      return;
+    }
+
+    if (files.length > maxFiles) {
+      alert(`You can only upload up to ${maxFiles} images.`);
+      this.value = "";
+      filePreview.style.display = 'none';
+      submitSection.classList.add('d-none');
+      return;
+    }
+
+    for (const file of files) {
+      const li = document.createElement('li');
+      li.classList.add('list-group-item');
+      li.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      fileList.appendChild(li);
+    }
+
+    filePreview.style.display = 'block';
+    submitSection.classList.remove('d-none');
+  });
+</script>
+{% endblock %}

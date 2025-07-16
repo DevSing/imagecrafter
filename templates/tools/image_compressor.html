@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Image Compressor{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center mt-5">
+  <div class="bg-white rounded-4 shadow-sm p-5" style="max-width: 600px; width: 100%;">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-dark">
+        <i class="bi bi-image-alt fs-1 text-primary"></i> Image Compressor
+      </h2>
+      <p class="text-muted">
+        Upload up to <strong>{{ max_files }}</strong> images to compress. All images will be zipped in one file.
+      </p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" id="compressForm">
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Select image files:</label>
+        <input type="file" class="form-control" name="images" id="images" accept="image/*" multiple hidden>
+        <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('images').click();">
+          Choose Images
+        </button>
+        <div class="form-text">You can upload up to <strong>{{ max_files }}</strong> images.</div>
+      </div>
+
+      <div class="mb-3" id="filePreview" style="display: none;">
+        <label class="form-label">📂 Selected Files:</label>
+        <ul class="list-group" id="fileList"></ul>
+      </div>
+
+      <div class="d-none" id="submitSection">
+        <button type="submit" class="btn btn-primary w-100">Compress & Download</button>
+      </div>
+    </form>
+
+    {% if zip_filename %}
+      <div class="text-center mt-4">
+        <h5 class="text-success">✅ Compression Complete!</h5>
+        <a href="{{ url_for('tools.download_zip', filename=zip_filename) }}" class="btn btn-success mt-2">
+          Download Now
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  const imagesInput = document.getElementById('images');
+  const filePreview = document.getElementById('filePreview');
+  const fileList = document.getElementById('fileList');
+  const submitSection = document.getElementById('submitSection');
+  const maxFiles = {{ max_files }};
+
+  imagesInput.addEventListener('change', function () {
+    fileList.innerHTML = "";
+    const files = this.files;
+
+    if (files.length > maxFiles) {
+      alert(`You can upload a maximum of ${maxFiles} files.`);
+      this.value = "";
+      filePreview.style.display = 'none';
+      submitSection.classList.add('d-none');
+      return;
+    }
+
+    for (const file of files) {
+      const li = document.createElement('li');
+      li.classList.add('list-group-item');
+      li.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      fileList.appendChild(li);
+    }
+
+    filePreview.style.display = 'block';
+    submitSection.classList.remove('d-none');
+  });
+</script>
+{% endblock %}
