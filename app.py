@@ -1,7 +1,8 @@
 from flask import Flask, redirect, url_for, render_template, session
 from flask_login import LoginManager, login_required, current_user
 from config import Config
-from models import db, User, SiteStat
+from extensions import db
+from models import User, SiteStat
 from auth import auth_bp
 from tools.routes import tools_bp
 
