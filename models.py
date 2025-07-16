@@ -1,8 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
+from extensions import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-db = SQLAlchemy()
-
 class User(db.Model, UserMixin):
     """Registered user model."""
     id = db.Column(db.Integer, primary_key=True)
@@ -25,4 +23,3 @@ class SiteStat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     visitors = db.Column(db.Integer, default=0)          # Total site visitors
     files_converted = db.Column(db.Integer, default=0)   # Total converted/downloaded files
-
